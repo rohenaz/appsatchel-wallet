@@ -26,7 +26,7 @@ pids
 lib-cov
 
 # Coverage directory used by tools like istanbul
-coverage
+/coverage
 
 # nyc test coverage
 .nyc_output
@@ -44,7 +44,9 @@ bower_components
 build/Release
 
 # Dependency directories
-node_modules/
+/node_modules
+/.pnp
+.pnp.js
 
 # Optional npm cache directory
 .npm
@@ -63,3 +65,13 @@ node_modules/
 
 # dotenv environment variables file
 .env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# production
+/build
+
+# misc
+.DS_Store
