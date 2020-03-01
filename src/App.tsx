@@ -1,26 +1,15 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React from "react";
+import { Redirect, Route, Switch } from "react-router";
+import { ROUTES__INITIALIZE, ROUTES__WALLET } from "./constants";
+import InitializeRoutes from "./initialize/InitializeRoutes";
+import WalletRoutes from "./wallet/WalletRoutes";
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
-}
+const App = () => (
+  <Switch>
+    <Route path={ROUTES__INITIALIZE} component={InitializeRoutes} />
+    <Route path={ROUTES__WALLET} component={WalletRoutes} />
+    <Redirect to={ROUTES__WALLET} />
+  </Switch>
+);
 
 export default App;
