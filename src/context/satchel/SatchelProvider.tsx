@@ -1,19 +1,20 @@
 import satchel from "bsv-satchel";
 import React, { useCallback, useContext, useEffect, useMemo } from "react";
 import { useHistory } from "react-router-dom";
-import { ROUTES__INITIALIZE } from "../../constants";
+import { ROUTES__INITIALIZE, ROUTES__WALLET } from "../../constants";
 
 type ContextValue = {
   satchel: any; // TODO: abstract this object away and provide the required methods
   isAuthenticated: () => boolean;
-  recoverWallet: () => Promise<void>;
+  recoverWallet: (seedPhrase: string) => Promise<void>;
   createNewWallet: () => Promise<void>;
+  logout: () => void;
 };
 
 const AuthContext = React.createContext<ContextValue | undefined>(undefined);
 
 const SatchelProvider = (props: any) => {
-  let history = useHistory();
+  const history = useHistory();
 
   const socketCallback = useCallback(
     (data: any) => {
@@ -37,36 +38,48 @@ const SatchelProvider = (props: any) => {
     });
   }, [socketCallback]);
 
-  const recoverWallet = useCallback(async () => {
-    let login = prompt("Enter a 12 word mnemonic");
-    if (!satchel.login) {
-      return;
-    }
-    await satchel.login(login);
-    if (satchel.isLoggedIn()) {
-      console.log("logged in");
-      // await walletLoaded()
-    } else {
-      alert("Could not recover wallet based on provided mnemonic");
-    }
-  }, []);
+  const recoverWallet = useCallback(
+    async (seedPhrase: string) => {
+      if (!seedPhrase) {
+        return;
+      }
+
+      await satchel.login(seedPhrase);
+
+      if (satchel.isLoggedIn()) {
+        history.push(ROUTES__WALLET);
+      } else {
+        throw new Error("Could not recover wallet based on provided mnemonic");
+      }
+    },
+    [history]
+  );
 
   const createNewWallet = useCallback(async () => {
     if (satchel.isLoggedIn()) {
       alert("already logged in");
     } else {
       await satchel.new();
+      history.push(ROUTES__WALLET);
     }
-  }, []);
+  }, [history]);
+
+  const logout = useCallback(() => {
+    if (satchel.isLoggedIn()) {
+      satchel.logout();
+      history.push(ROUTES__INITIALIZE);
+    }
+  }, [history]);
 
   const value = useMemo(
     () => ({
       satchel,
       isAuthenticated: satchel.isLoggedIn,
       recoverWallet,
-      createNewWallet
+      createNewWallet,
+      logout
     }),
-    [createNewWallet, recoverWallet]
+    [createNewWallet, logout, recoverWallet]
   );
 
   return <AuthContext.Provider value={value} {...props} />;

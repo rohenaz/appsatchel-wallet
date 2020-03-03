@@ -1,21 +1,24 @@
+import { EmptyState } from "@shopify/polaris";
 import React from "react";
-import { Link } from "react-router-dom";
 import {
   ROUTES__INITIALIZE,
   ROUTES__INITIALIZE_SELECT_ACTION
 } from "../constants";
 
 const Welcome = () => (
-  <>
-    <h1>Welcome to Satchel Wallet</h1>
+  <EmptyState
+    heading="Welcome to Satchel Wallet"
+    action={{
+      content: "Get Started",
+      url: `${ROUTES__INITIALIZE}${ROUTES__INITIALIZE_SELECT_ACTION}`
+    }}
+    image="https://cdn.shopify.com/s/files/1/0757/9955/files/empty-state.svg"
+  >
     <p>
-      Satchel Wallet is a safe wallet for Bitcoin SV that can be used in many
+      Satchel Wallet is a safe wallet for Bitcoin SV that you can use with many
       DApps.
     </p>
-    <Link to={`${ROUTES__INITIALIZE}${ROUTES__INITIALIZE_SELECT_ACTION}`}>
-      Get Started
-    </Link>
-  </>
+  </EmptyState>
 );
 
 export default Welcome;
